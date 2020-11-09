@@ -2,12 +2,10 @@ import express from "express";
 import { json } from "body-parser";
 import "express-async-errors";
 import cookieSession from "cookie-session";
-import { currentUserRouter } from "./routes/current-user";
-import { signinRouter } from "./routes/signin";
-import { signoutRouter } from "./routes/signout";
-import { singupRouter } from "./routes/signup";
 import { NotFoundError } from "./errors";
-import { errorHandler } from "./middlewares";
+import { currentUser, errorHandler } from "./middlewares";
+import { UserRouter } from "./routes/user";
+import { TicketRouter } from "./routes/tickets";
 
 const app = express();
 app.set("trust proxy", true);
@@ -19,12 +17,11 @@ app.use(
     // Need to set this to true so we can only receive cookie from https requests...
   })
 );
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutRouter);
-app.use(singupRouter);
+app.use(currentUser);
+app.use(UserRouter);
+app.use(TicketRouter);
 
-app.get("*", (req, res) => {
+app.all("*", (req, res) => {
   throw new NotFoundError();
 });
 
