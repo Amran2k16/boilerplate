@@ -6,7 +6,7 @@ import { NotFoundError } from "./errors";
 import { currentUser, errorHandler } from "./middlewares";
 import { UserRouter } from "./routes/user";
 import { TicketRouter } from "./routes/tickets";
-
+import { UploadRouter } from "./routes/upload";
 const app = express();
 app.set("trust proxy", true);
 app.use(json());
@@ -21,7 +21,7 @@ app.use(
 app.use(currentUser);
 app.use(UserRouter);
 app.use(TicketRouter);
-
+app.use(UploadRouter);
 app.all("*", (req, res) => {
   throw new NotFoundError();
 });
