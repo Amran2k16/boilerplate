@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 
 const createTicket = async () => {
   const response = await request(app)
-    .post("/api/tickets")
+    .post("/tickets")
     .set("Cookie", global.signin())
     .send({ title: "Asdafsdf", price: 20 });
   return response;
@@ -18,7 +18,7 @@ describe("Get tickets", () => {
     await createTicket();
 
     const response = await request(app)
-      .get("/api/tickets")
+      .get("/tickets")
       .set("Cookie", global.signin())
       .send()
       .expect(200);
@@ -27,7 +27,7 @@ describe("Get tickets", () => {
 
   it("returns a 404 if the ticket is not found", async () => {
     const id = new mongoose.Types.ObjectId().toHexString();
-    await request(app).get(`/api/tickets/${id}`).send().expect(404);
+    await request(app).get(`/tickets/${id}`).send().expect(404);
   });
 
   it("returns the ticket if the ticket is found", async () => {
@@ -35,7 +35,7 @@ describe("Get tickets", () => {
     const price = 20;
 
     const response = await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", global.signin())
       .send({
         title,
@@ -44,7 +44,7 @@ describe("Get tickets", () => {
       .expect(201);
 
     const ticketResponse = await request(app)
-      .get(`/api/tickets/${response.body.id}`)
+      .get(`/tickets/${response.body.id}`)
       .send()
       .expect(200);
 
@@ -54,19 +54,19 @@ describe("Get tickets", () => {
 });
 
 describe("Create tickets", () => {
-  it("has a route handler listening to /api/tickets for post requests", async () => {
-    const response = await request(app).post("/api/tickets").send({});
+  it("has a route handler listening to /tickets for post requests", async () => {
+    const response = await request(app).post("/tickets").send({});
 
     expect(response.status).not.toEqual(404);
   });
 
   it("can only be accessed if the user is signed in", async () => {
-    await request(app).post("/api/tickets").send({}).expect(401);
+    await request(app).post("/tickets").send({}).expect(401);
   });
 
   it("returns a status other than 401 if the user is signed in", async () => {
     const response = await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", global.signin())
       .send({});
 
@@ -75,7 +75,7 @@ describe("Create tickets", () => {
 
   it("returns an error if an invalid title is provided", async () => {
     await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", global.signin())
       .send({
         title: "",
@@ -84,7 +84,7 @@ describe("Create tickets", () => {
       .expect(400);
 
     await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", global.signin())
       .send({
         price: 10,
@@ -94,7 +94,7 @@ describe("Create tickets", () => {
 
   it("returns an error if an invalid price is provided", async () => {
     await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", global.signin())
       .send({
         title: "asldkjf",
@@ -103,7 +103,7 @@ describe("Create tickets", () => {
       .expect(400);
 
     await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", global.signin())
       .send({
         title: "laskdfj",
@@ -118,7 +118,7 @@ describe("Create tickets", () => {
     const title = "asldkfj";
 
     await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", global.signin())
       .send({
         title,
@@ -136,7 +136,7 @@ describe("Update ticket", () => {
   it("should return a 404 if the provided id does not exist", async () => {
     const id = new mongoose.Types.ObjectId().toHexString();
     await request(app)
-      .put(`/api/tickets/${id}`)
+      .put(`/tickets/${id}`)
       .set("Cookie", global.signin())
       .send({ title: "fasdf", price: 20 })
       .expect(404);
@@ -144,19 +144,19 @@ describe("Update ticket", () => {
   it("should return a 401 if the user is not authenticated", async () => {
     const id = new mongoose.Types.ObjectId().toHexString();
     await request(app)
-      .put(`/api/tickets/${id}`)
+      .put(`/tickets/${id}`)
       .send({ title: "fasdf", price: 20 })
       .expect(401);
   });
   it("should return a 401 if the user does not own the ticket", async () => {
     const ticket = await request(app)
-      .post(`/api/tickets`)
+      .post(`/tickets`)
       .set("Cookie", global.signin())
       .send({ title: "fasdf", price: 20 })
       .expect(201);
 
     await request(app)
-      .put(`/api/tickets/${ticket.body.id}`)
+      .put(`/tickets/${ticket.body.id}`)
       .set("Cookie", global.signin())
       .send({ title: "fasdfasdf", price: 23123 })
       .expect(401);
@@ -166,7 +166,7 @@ describe("Update ticket", () => {
     const cookie = global.signin();
 
     const response = await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", cookie)
       .send({
         title: "asldkfj",
@@ -174,7 +174,7 @@ describe("Update ticket", () => {
       });
 
     await request(app)
-      .put(`/api/tickets/${response.body.id}`)
+      .put(`/tickets/${response.body.id}`)
       .set("Cookie", cookie)
       .send({
         title: "",
@@ -183,7 +183,7 @@ describe("Update ticket", () => {
       .expect(400);
 
     await request(app)
-      .put(`/api/tickets/${response.body.id}`)
+      .put(`/tickets/${response.body.id}`)
       .set("Cookie", cookie)
       .send({
         title: "alskdfjj",
@@ -196,7 +196,7 @@ describe("Update ticket", () => {
     const cookie = global.signin();
 
     const response = await request(app)
-      .post("/api/tickets")
+      .post("/tickets")
       .set("Cookie", cookie)
       .send({
         title: "asldkfj",
@@ -204,7 +204,7 @@ describe("Update ticket", () => {
       });
 
     await request(app)
-      .put(`/api/tickets/${response.body.id}`)
+      .put(`/tickets/${response.body.id}`)
       .set("Cookie", cookie)
       .send({
         title: "new title",
@@ -213,7 +213,7 @@ describe("Update ticket", () => {
       .expect(200);
 
     const ticketResponse = await request(app)
-      .get(`/api/tickets/${response.body.id}`)
+      .get(`/tickets/${response.body.id}`)
       .send();
 
     expect(ticketResponse.body.title).toEqual("new title");

@@ -6,13 +6,13 @@ import { NotAuthorizedError, NotFoundError } from "../errors";
 
 const router = express.Router();
 
-router.get("/api/tickets", async (req: Request, res: Response) => {
+router.get("/tickets", async (req: Request, res: Response) => {
   const tickets = await Ticket.find({});
   res.send(tickets);
 });
 
 router.post(
-  "/api/tickets",
+  "/tickets",
   requireAuth,
   [
     body("title").not().isEmpty().withMessage("Title is required"),
@@ -29,7 +29,7 @@ router.post(
   }
 );
 
-router.get("/api/tickets/:id", async (req: Request, res: Response) => {
+router.get("/tickets/:id", async (req: Request, res: Response) => {
   const ticket = await Ticket.findById(req.params.id);
 
   if (!ticket) {
@@ -40,7 +40,7 @@ router.get("/api/tickets/:id", async (req: Request, res: Response) => {
 });
 
 router.put(
-  "/api/tickets/:id",
+  "/tickets/:id",
   requireAuth,
   [
     body("title").not().isEmpty().withMessage("Title is required"),

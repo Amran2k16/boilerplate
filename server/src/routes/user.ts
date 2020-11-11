@@ -7,12 +7,13 @@ import { currentUser, validateRequest } from "../middlewares";
 import { BadRequestError } from "../errors";
 const router = express.Router();
 
-router.get("/api/users/currentuser", currentUser, (req, res) => {
+router.get("/users/currentuser", currentUser, (req, res) => {
+  console.log({ currentUser: req.currentUser || null });
   res.send({ currentUser: req.currentUser || null });
 });
 
 router.post(
-  "/api/users/signin",
+  "/users/signin",
   [
     body("email").isEmail().withMessage("Email must be valid"),
     body("password")
@@ -49,13 +50,13 @@ router.post(
   }
 );
 
-router.post("/api/users/signout", (req, res) => {
+router.post("/users/signout", (req, res) => {
   req.session = null;
   res.send({});
 });
 
 router.post(
-  "/api/users/signup",
+  "/users/signup",
   [
     body("email").isEmail().withMessage("Email must be valid"),
     body("password")

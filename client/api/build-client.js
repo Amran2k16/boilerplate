@@ -5,7 +5,7 @@ export default ({ req }) => {
         // We are on the server
 
         return axios.create({
-            baseURL: 'nginx',
+            baseURL: 'http://nginx:80',
             headers: req.headers,
         })
     } else {

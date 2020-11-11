@@ -6,7 +6,7 @@ describe("currentuser route", () => {
     const cookie = await global.signin();
 
     const response = await request(app)
-      .get("/api/users/currentuser")
+      .get("/users/currentuser")
       .set("Cookie", cookie)
       .send()
       .expect(200);
@@ -16,7 +16,7 @@ describe("currentuser route", () => {
 
   it("responds with null if not authenticated", async () => {
     const response = await request(app)
-      .get("/api/users/currentuser")
+      .get("/users/currentuser")
       .send()
       .expect(200);
 
@@ -27,7 +27,7 @@ describe("currentuser route", () => {
 describe("signin route", () => {
   it("fails when an email that does not exist is supplied", async () => {
     await request(app)
-      .post("/api/users/signin")
+      .post("/users/signin")
       .send({
         email: "test@test.com",
         password: "password",
@@ -37,7 +37,7 @@ describe("signin route", () => {
 
   it("fails when an incorrect password is supplied", async () => {
     await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "password",
@@ -45,7 +45,7 @@ describe("signin route", () => {
       .expect(201);
 
     await request(app)
-      .post("/api/users/signin")
+      .post("/users/signin")
       .send({
         email: "test@test.com",
         password: "fasdfasd",
@@ -55,7 +55,7 @@ describe("signin route", () => {
 
   it("responds with a cookie when given valid credentials", async () => {
     await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "password",
@@ -63,7 +63,7 @@ describe("signin route", () => {
       .expect(201);
 
     const response = await request(app)
-      .post("/api/users/signin")
+      .post("/users/signin")
       .send({
         email: "test@test.com",
         password: "password",
@@ -77,7 +77,7 @@ describe("signin route", () => {
 describe("signout route", () => {
   it("clears the cookie after signing out", async () => {
     await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "password",
@@ -85,7 +85,7 @@ describe("signout route", () => {
       .expect(201);
 
     const response = await request(app)
-      .post("/api/users/signout")
+      .post("/users/signout")
       .send({})
       .expect(200);
 
@@ -96,7 +96,7 @@ describe("signout route", () => {
 describe("signup route", () => {
   it("returns a 201 on succesfull signup", async () => {
     return request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "password",
@@ -106,7 +106,7 @@ describe("signup route", () => {
 
   it("returns a 400 with an invalid email", async () => {
     return request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test.com",
         password: "password",
@@ -116,7 +116,7 @@ describe("signup route", () => {
 
   it("returns a 400 with an invalid password", async () => {
     return request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "p",
@@ -126,13 +126,13 @@ describe("signup route", () => {
 
   it("returns a 400 with missing email and password", async () => {
     await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
       })
       .expect(400);
     await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         password: "asfdasd",
       })
@@ -141,7 +141,7 @@ describe("signup route", () => {
 
   it("disallows duplicate emails", async () => {
     await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "password",
@@ -149,7 +149,7 @@ describe("signup route", () => {
       .expect(201);
 
     await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "password",
@@ -159,7 +159,7 @@ describe("signup route", () => {
 
   it("sets a cookie after a succesful sign up", async () => {
     const response = await request(app)
-      .post("/api/users/signup")
+      .post("/users/signup")
       .send({
         email: "test@test.com",
         password: "password",
