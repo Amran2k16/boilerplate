@@ -1,7 +1,19 @@
 import buildClient from '../api/build-client'
+import axios from 'axios'
+
 const LandingPage = ({ currentUser }) => {
+    const uploadFile = async (event) => {
+        const file = event.target.files[0]
+        const formData = new FormData()
+        formData.append('image', file)
+        await axios.post('/api/upload', formData, {})
+    }
+
     return currentUser ? (
-        <h1>You are signed in</h1>
+        <div>
+            <h1>You are signed in</h1>
+            <input type="file" name="file" onChange={uploadFile} />
+        </div>
     ) : (
         <h1>You are not signed in</h1>
     )
