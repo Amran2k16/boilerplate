@@ -5,9 +5,8 @@ services:
     restart: always
     ports:
       - "27017:27017"
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: root
-    #   MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - ./mongo_volume/data:/data/db
   nginx:
     depends_on:
       - api
@@ -25,11 +24,9 @@ services:
     volumes:
       - /app/node_modules
       - ./server:/app
-      - /Users/Personal/Downloads/VidNote-a3761284913d.json:/VidNote-a3761284913d.json
     environment:
       - JWT_KEY=asdf
-      - MONGO_URI=mongodb://mongo:27017/vidnote
-      - GOOGLE_APPLICATION_CREDENTIALS=/VidNote-a3761284913d.json
+      - MONGO_URI=mongodb://mongo:27017/roots
   client:
     stdin_open: true
     build:

@@ -1,30 +1,57 @@
 import buildClient from '../api/build-client'
 import axios from 'axios'
+import { useState, useEffect } from 'react'
+import Router from 'next/router'
+import { Container, Grid, makeStyles } from '@material-ui/core'
 
-const LandingPage = ({ currentUser }) => {
-    const uploadFile = async (event) => {
-        const file = event.target.files[0]
-        const formData = new FormData()
-        formData.append('image', file)
-        await axios.post('/api/upload', formData, {})
+const useStyles = makeStyles((theme) => ({
+    root: { flexGrow: 1 },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+    topMargin: {
+        marginTop: theme.spacing(5),
+    },
+}))
+
+const LandingPage = ({ currentUser, files }) => {
+    const classes = useStyles()
+
+    if (currentUser) {
+        return (
+            <Container maxWidth="md">
+                <Grid
+                    container
+                    direction="column"
+                    className={classes.topMargin}
+                >
+                    <Grid item xs={12}></Grid>
+
+                    <Grid item></Grid>
+                </Grid>
+            </Container>
+        )
+    } else {
+        return (
+            <Container component="main" maxWidth="md">
+                <h1>Signed out</h1>
+            </Container>
+        )
     }
-
-    return currentUser ? (
-        <div>
-            <h1>You are signed in</h1>
-            <input type="file" name="file" onChange={uploadFile} />
-        </div>
-    ) : (
-        <h1>You are not signed in</h1>
-    )
 }
 
 LandingPage.getInitialProps = async (context) => {
     const client = buildClient(context)
-    const { data } = await client.get('/api/users/currentuser')
-    return data
+    const { currentUser } = (await client.get('/api/users/currentuser')).data
+    let files = []
+    if (currentUser) {
+        console.log(currentUser)
+        files = (await client.get('/api/upload')).data
+        console.log({ files })
+    }
+    return { currentUser, files }
 }
 
 export default LandingPage
-
-// ingress-nginx-controller-admission.kube-system.svc.cluster.local
